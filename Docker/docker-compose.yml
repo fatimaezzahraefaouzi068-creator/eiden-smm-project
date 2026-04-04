@@ -1,0 +1,52 @@
+
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: smm_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: smm_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - smm_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: smm_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - smm_network
+
+  backend:
+    build: ../backend
+    container_name: smm_backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      DATABASE_URL: postgresql://postgres:password@db:5432/smm_db
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    volumes:
+      - ../backend:/app
+    networks:
+      - smm_network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  smm_network:
+    driver: bridge
+    
