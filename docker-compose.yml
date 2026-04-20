@@ -1,5 +1,3 @@
-
-
 services:
   db:
     image: postgres:15-alpine
@@ -14,6 +12,11 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - smm_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:7-alpine
@@ -24,23 +27,32 @@ services:
       - redis_data:/data
     networks:
       - smm_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   backend:
-    build: ../backend
+    build: ./backend
     container_name: smm_backend
     ports:
       - "5000:5000"
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       DATABASE_URL: postgresql://postgres:password@db:5432/smm_db
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      FLASK_ENV: development
     volumes:
-      - ../backend:/app
+      - ./backend:/app
     networks:
       - smm_network
+    command: python run.py
 
 volumes:
   postgres_data:
@@ -49,4 +61,3 @@ volumes:
 networks:
   smm_network:
     driver: bridge
-    

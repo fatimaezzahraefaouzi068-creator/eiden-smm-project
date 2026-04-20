@@ -1,77 +1,13 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Eiden SMM Dashboard</title>
-    <style>
-        body {
-            background: #0a0c12;
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            color: white;
-            text-align: center;
-        }
-        h1 { color: #6c7aff; }
-        .kpi {
-            display: inline-block;
-            background: #1a1e2f;
-            padding: 20px;
-            margin: 10px;
-            border-radius: 15px;
-            width: 200px;
-        }
-        .value { font-size: 2rem; color: #6c7aff; font-weight: bold; }
-        canvas { max-width: 800px; margin: 20px auto; display: block; }
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-</head>
-<body>
-    <h1>📊 EIDEN GROUPE - SMM DASHBOARD</h1>
-    <p>API Status: <span id="apiStatus" style="color:#2ed48a;">Chargement...</span></p>
-
-    <div>
-        <div class="kpi"><div>📈 Engagement Rate</div><div class="value" id="er">--%</div></div>
-        <div class="kpi"><div>📊 Follower Growth</div><div class="value" id="fgr">--%</div></div>
-        <div class="kpi"><div>⚡ Virality Score</div><div class="value" id="vs">--</div></div>
-        <div class="kpi"><div>⭐ EQS</div><div class="value" id="eqs">--</div></div>
-    </div>
-
-    <canvas id="myChart"></canvas>
-
-    <script>
-        // Vérifier l'API
-        fetch('http://localhost:5000/api/health')
-            .then(r => r.json())
-            .then(data => document.getElementById('apiStatus').innerText = data.status)
-            .catch(() => document.getElementById('apiStatus').innerText = 'Hors ligne (lancez python run.py)');
-
-        // Charger les données
-        fetch('http://localhost:5000/api/metrics/engagement')
-            .then(r => r.json())
-            .then(data => {
-                document.getElementById('er').innerText = data.engagement_rate + '%';
-                document.getElementById('vs').innerText = data.virality_score;
-                document.getElementById('eqs').innerText = data.eqs;
-            });
-
-        fetch('http://localhost:5000/api/metrics/growth')
-            .then(r => r.json())
-            .then(data => document.getElementById('fgr').innerText = data.follower_growth_rate + '%');
-
-        // Graphique
-        new Chart(document.getElementById('myChart'), {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'],
-                datasets: [{
-                    label: 'Engagement Rate (%)',
-                    data: [8.2, 8.7, 9.3, 10.1, 10.8, 11.4, 12.0, 11.7, 12.2, 12.9, 13.4, 14.1],
-                    borderColor: '#6c7aff',
-                    backgroundColor: 'rgba(108,122,255,0.1)',
-                    fill: true
-                }]
-            }
-        });
-    </script>
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>frontend</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
