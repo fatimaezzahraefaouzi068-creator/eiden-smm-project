@@ -5,12 +5,14 @@ const KPICard = ({ title, value, change, icon, color = 'teal' }) => {
   const colors = {
     teal: 'border-teal',
     gold: 'border-gold-dk',
-    forest: 'border-forest',
     red: 'border-red',
+    blue: 'border-blue',
+    mint: 'border-mint',
+    purple: 'border-purple',
   };
 
   return (
-    <div className={`bg-white p-6 border-t-3 ${colors[color]} border-t-3`}>
+    <div className={`bg-surface p-6 border-t-3 ${colors[color]} transition-all hover:-translate-y-1 hover:shadow-lg`}>
       <div className="flex items-center justify-between mb-2">
         <div className="text-[10px] font-label tracking-[0.2em] text-forest/40 uppercase">
           {title}
